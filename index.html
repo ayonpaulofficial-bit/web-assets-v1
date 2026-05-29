@@ -1,325 +1,361 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Asset Management System</title>
     <!-- Core Streaming Engine -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <!-- Premium Font Family -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
 
-        body {
-            background-color: #000000;
-            color: #ffffff;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+      body {
+        background-color: #000000;
+        color: #ffffff;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
 
-        /* PREMIUM HEADER */
-        .header {
-            background: #050505;
-            padding: 15px 30px;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid #333;
-        }
-        .header h1 {
-            font-size: 24px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            color: #ffffff;
-        }
-        .header span {
-            color: #888;
-            font-weight: 300;
-        }
+      /* PREMIUM HEADER */
+      .header {
+        background: #050505;
+        padding: 15px 30px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #333;
+      }
+      .header h1 {
+        font-size: 24px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        color: #ffffff;
+      }
+      .header span {
+        color: #888;
+        font-weight: 300;
+      }
 
-        /* MAIN LAYOUT */
+      /* MAIN LAYOUT */
+      .main-container {
+        display: flex;
+        flex: 1;
+        height: calc(100vh - 65px);
+      }
+
+      /* VIEWPORT SECTION */
+      .viewport-section {
+        flex: 7;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-right: 1px solid #222;
+      }
+
+      video {
+        width: 100%;
+        height: 100%;
+        background: #000;
+        object-fit: contain;
+      }
+
+      /* SIDEBAR LIST */
+      .sidebar {
+        flex: 3;
+        background: #0a0a0a;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* SEARCH CONTAINER */
+      .search-container {
+        padding: 20px;
+        background: #0a0a0a;
+        border-bottom: 1px solid #222;
+      }
+      .search-container input {
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 15px;
+        border: 1px solid #333;
+        border-radius: 30px;
+        background: #111;
+        color: #fff;
+        outline: none;
+        transition: all 0.3s ease;
+      }
+      .search-container input:focus {
+        border-color: #fff;
+        background: #1a1a1a;
+      }
+
+      /* GRID SYSTEM */
+      .asset-grid {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
+      }
+
+      .asset-grid::-webkit-scrollbar {
+        width: 6px;
+      }
+      .asset-grid::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 10px;
+      }
+      .asset-grid::-webkit-scrollbar-thumb:hover {
+        background: #fff;
+      }
+
+      /* ITEM CARD */
+      .item-card {
+        background: #111;
+        border: 1px solid #222;
+        border-radius: 12px;
+        height: 90px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .item-card:hover {
+        transform: translateY(-3px);
+        background: #1a1a1a;
+        border-color: #555;
+        box-shadow: 0 5px 15px rgba(255, 255, 255, 0.05);
+      }
+      .item-card img {
+        max-width: 100%;
+        max-height: 50px;
+        object-fit: contain;
+        margin-bottom: 5px;
+      }
+      .item-card span {
+        font-size: 11px;
+        text-align: center;
+        color: #aaa;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+      }
+
+      /* ACTIVE STATE */
+      .active-item {
+        background: #fff !important;
+        border-color: #fff !important;
+        color: #000 !important;
+        transform: scale(1.02);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      }
+      .active-item span {
+        color: #000;
+        font-weight: 600;
+      }
+      .active-item img {
+        filter: brightness(0.2);
+      }
+
+      @media (max-width: 900px) {
         .main-container {
-            display: flex;
-            flex: 1;
-            height: calc(100vh - 65px);
+          flex-direction: column;
         }
-
-        /* VIEWPORT SECTION */
         .viewport-section {
-            flex: 7;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-right: 1px solid #222;
+          flex: none;
+          height: 35vh;
+          border-right: none;
+          border-bottom: 1px solid #333;
         }
-
-        video {
-            width: 100%;
-            height: 100%;
-            background: #000;
-            object-fit: contain;
-        }
-
-        /* SIDEBAR LIST */
         .sidebar {
-            flex: 3;
-            background: #0a0a0a;
-            display: flex;
-            flex-direction: column;
+          flex: 1;
+          height: 65vh;
         }
-
-        /* SEARCH CONTAINER */
-        .search-container {
-            padding: 20px;
-            background: #0a0a0a;
-            border-bottom: 1px solid #222;
-        }
-        .search-container input {
-            width: 100%;
-            padding: 14px 20px;
-            font-size: 15px;
-            border: 1px solid #333;
-            border-radius: 30px;
-            background: #111;
-            color: #fff;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-        .search-container input:focus {
-            border-color: #fff;
-            background: #1a1a1a;
-        }
-
-        /* GRID SYSTEM */
-        .asset-grid {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 15px;
-        }
-
-        .asset-grid::-webkit-scrollbar { width: 6px; }
-        .asset-grid::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        .asset-grid::-webkit-scrollbar-thumb:hover { background: #fff; }
-
-        /* ITEM CARD */
-        .item-card {
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 12px;
-            height: 90px;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .item-card:hover {
-            transform: translateY(-3px);
-            background: #1a1a1a;
-            border-color: #555;
-            box-shadow: 0 5px 15px rgba(255,255,255,0.05);
-        }
-        .item-card img {
-            max-width: 100%;
-            max-height: 50px;
-            object-fit: contain;
-            margin-bottom: 5px;
-        }
-        .item-card span {
-            font-size: 11px;
-            text-align: center;
-            color: #aaa;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-        }
-
-        /* ACTIVE STATE */
-        .active-item {
-            background: #fff !important;
-            border-color: #fff !important;
-            color: #000 !important;
-            transform: scale(1.02);
-            box-shadow: 0 0 20px rgba(255,255,255,0.2);
-        }
-        .active-item span {
-            color: #000;
-            font-weight: 600;
-        }
-        .active-item img {
-            filter: brightness(0.2);
-        }
-
-        @media (max-width: 900px) {
-            .main-container { flex-direction: column; }
-            .viewport-section { flex: none; height: 35vh; border-right: none; border-bottom: 1px solid #333; }
-            .sidebar { flex: 1; height: 65vh; }
-        }
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="header">
-        <h1>CORE<span>ASSETS</span></h1>
+      <h1>CORE<span>ASSETS</span></h1>
     </div>
 
     <div class="main-container">
-        <div class="viewport-section">
-            <video id="main-player" controls autoplay playsinline></video>
-        </div>
+      <div class="viewport-section">
+        <video id="main-player" controls autoplay playsinline></video>
+      </div>
 
-        <div class="sidebar">
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterItems()">
-            </div>
-            <div class="asset-grid" id="assetGrid"></div>
+      <div class="sidebar">
+        <div class="search-container">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search..."
+            onkeyup="filterItems()"
+          />
         </div>
+        <div class="asset-grid" id="assetGrid"></div>
+      </div>
     </div>
 
     <script>
-        const dataSourceUrl = 'https://raw.githubusercontent.com/Rakib49/Rakibiptv/refs/heads/main/aynaott.m3u';
-        let totalItems = [];
-        const corePlayer = document.getElementById('main-player');
+      const dataSourceUrl =
+        "https://gist.githubusercontent.com/ayonpaulofficial-bit/f200df05302646ac702104c363355983/raw/1923c38b4be662eef74a13d7c4a28908c290862f/data-test.m3u";
+      let totalItems = [];
+      const corePlayer = document.getElementById("main-player");
 
-        // Configuration Parser
-        fetch(dataSourceUrl)
-            .then(response => response.text())
-            .then(data => {
-                const lines = data.split('\n');
-                let currentItem = null;
+      // Configuration Parser
+      fetch(dataSourceUrl)
+        .then((response) => response.text())
+        .then((data) => {
+          const lines = data.split("\n");
+          let currentItem = null;
 
-                lines.forEach(line => {
-                    line = line.trim();
-                    if (line.startsWith('#EXTINF')) {
-                        let name = "Unknown Asset";
-                        let nameSplit = line.split(',');
-                        if (nameSplit.length > 1) {
-                            name = nameSplit[1].trim();
-                        }
+          lines.forEach((line) => {
+            line = line.trim();
+            if (line.startsWith("#EXTINF")) {
+              let name = "Unknown Asset";
+              let nameSplit = line.split(",");
+              if (nameSplit.length > 1) {
+                name = nameSplit[1].trim();
+              }
 
-                        let logo = '';
-                        let logoMatch = line.match(/tvg-logo="(.*?)"/);
-                        if (logoMatch) {
-                            logo = logoMatch[1];
-                        }
+              let logo = "";
+              let logoMatch = line.match(/tvg-logo="(.*?)"/);
+              if (logoMatch) {
+                logo = logoMatch[1];
+              }
 
-                        currentItem = { name, logo };
-                    } else if (line && !line.startsWith('#')) {
-                        if (currentItem) {
-                            currentItem.url = line;
-                            totalItems.push(currentItem);
-                            currentItem = null; 
-                        }
-                    }
-                });
-
-                // Priority Sorting Matrix
-                function assignPriority(itemName) {
-                    const str = itemName.toLowerCase();
-                    if (str.includes('zee bangla')) return 1;
-                    if (str.includes('jalsha')) return 2;
-                    if (str.includes('colors bangla')) return 3;
-                    if (str.includes('sony aath') || str.includes('aath')) return 4;
-                    if (str.includes('sun bangla')) return 5;
-                    if (str.includes('cnn')) return 6;
-                    if (str.includes('t sports')) return 7;
-                    if (str.includes('star sports')) return 8;
-                    if (str.includes('discovery')) return 9;
-                    if (str.includes('national geographic') || str.includes('nat geo')) return 10;
-                    if (str.includes('fifa')) return 11;
-                    if (str.includes('sony')) return 12;
-                    return 999;
-                }
-
-                totalItems.sort((a, b) => assignPriority(a.name) - assignPriority(b.name));
-
-                buildGrid();
-                
-                // প্লেলিস্ট লোড হওয়া মাত্রই প্রথম চ্যানেলটি রান করার চেষ্টা করবে
-                if (totalItems.length > 0) {
-                    streamSource(0);
-                }
-            })
-            .catch(err => console.error("System configuration failed: ", err));
-
-        function buildGrid() {
-            const grid = document.getElementById('assetGrid');
-            grid.innerHTML = '';
-
-            totalItems.forEach((item, index) => {
-                const card = document.createElement('div');
-                card.className = 'item-card';
-                card.id = 'item-' + index;
-                
-                if (item.logo) {
-                    card.innerHTML = `<img src="${item.logo}" alt="${item.name}" onerror="this.style.display='none'"> <span>${item.name}</span>`;
-                } else {
-                    card.innerHTML = `<span>${item.name}</span>`;
-                }
-
-                card.onclick = () => streamSource(index);
-                grid.appendChild(card);
-            });
-        }
-
-        function streamSource(index) {
-            const item = totalItems[index];
-            
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(item.url);
-                hls.attachMedia(corePlayer);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    corePlayer.play().catch(error => {
-                        console.log("Autoplay blocked by browser policy. Needs user interaction.");
-                    });
-                });
-            } 
-            else if (corePlayer.canPlayType('application/vnd.apple.mpegurl')) {
-                corePlayer.src = item.url;
-                corePlayer.addEventListener('loadedmetadata', function() {
-                    corePlayer.play().catch(error => {
-                        console.log("Autoplay blocked by browser policy. Needs user interaction.");
-                    });
-                });
+              currentItem = { name, logo };
+            } else if (line && !line.startsWith("#")) {
+              if (currentItem) {
+                currentItem.url = line;
+                totalItems.push(currentItem);
+                currentItem = null;
+              }
             }
+          });
 
-            document.querySelectorAll('.item-card').forEach(card => card.classList.remove('active-item'));
-            const activeCard = document.getElementById('item-' + index);
-            if(activeCard) {
-                activeCard.classList.add('active-item');
-                activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-        }
+          // Priority Sorting Matrix
+          function assignPriority(itemName) {
+            const str = itemName.toLowerCase();
+            if (str.includes("zee bangla")) return 1;
+            if (str.includes("jalsha")) return 2;
+            if (str.includes("colors bangla")) return 3;
+            if (str.includes("t sports")) return 4;
+            if (str.includes("star sports")) return 5;
+            if (str.includes("fifa")) return 6;
+            if (str.includes("cartoon network")) return 7;
+            if (str.includes("discovery")) return 8;
+            if (str.includes("national geographic") || str.includes("nat geo"))
+              return 9;
+            if (str.includes("animal planet")) return 10;
+            return 999;
+          }
 
-        function filterItems() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const cards = document.querySelectorAll('.item-card');
-            
-            totalItems.forEach((item, index) => {
-                if (item.name.toLowerCase().includes(query)) {
-                    cards[index].style.display = 'flex';
-                } else {
-                    cards[index].style.display = 'none';
-                }
+          totalItems.sort(
+            (a, b) => assignPriority(a.name) - assignPriority(b.name),
+          );
+
+          buildGrid();
+
+          // প্লেলিস্ট লোড হওয়া মাত্রই প্রথম চ্যানেলটি রান করার চেষ্টা করবে
+          if (totalItems.length > 0) {
+            streamSource(0);
+          }
+        })
+        .catch((err) => console.error("System configuration failed: ", err));
+
+      function buildGrid() {
+        const grid = document.getElementById("assetGrid");
+        grid.innerHTML = "";
+
+        totalItems.forEach((item, index) => {
+          const card = document.createElement("div");
+          card.className = "item-card";
+          card.id = "item-" + index;
+
+          if (item.logo) {
+            card.innerHTML = `<img src="${item.logo}" alt="${item.name}" onerror="this.style.display='none'"> <span>${item.name}</span>`;
+          } else {
+            card.innerHTML = `<span>${item.name}</span>`;
+          }
+
+          card.onclick = () => streamSource(index);
+          grid.appendChild(card);
+        });
+      }
+
+      function streamSource(index) {
+        const item = totalItems[index];
+
+        if (Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(item.url);
+          hls.attachMedia(corePlayer);
+          hls.on(Hls.Events.MANIFEST_PARSED, function () {
+            corePlayer.play().catch((error) => {
+              console.log(
+                "Autoplay blocked by browser policy. Needs user interaction.",
+              );
             });
+          });
+        } else if (corePlayer.canPlayType("application/vnd.apple.mpegurl")) {
+          corePlayer.src = item.url;
+          corePlayer.addEventListener("loadedmetadata", function () {
+            corePlayer.play().catch((error) => {
+              console.log(
+                "Autoplay blocked by browser policy. Needs user interaction.",
+              );
+            });
+          });
         }
+
+        document
+          .querySelectorAll(".item-card")
+          .forEach((card) => card.classList.remove("active-item"));
+        const activeCard = document.getElementById("item-" + index);
+        if (activeCard) {
+          activeCard.classList.add("active-item");
+          activeCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }
+
+      function filterItems() {
+        const query = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const cards = document.querySelectorAll(".item-card");
+
+        totalItems.forEach((item, index) => {
+          if (item.name.toLowerCase().includes(query)) {
+            cards[index].style.display = "flex";
+          } else {
+            cards[index].style.display = "none";
+          }
+        });
+      }
     </script>
-</body>
+  </body>
 </html>

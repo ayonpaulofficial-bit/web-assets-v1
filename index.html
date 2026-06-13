@@ -70,22 +70,13 @@
 
     <script>
       var cacheBuster = new Date().getTime();
-      var dataSourceUrl = "https://gist.githubusercontent.com/ayonpaulofficial-bit/f200df05302646ac702104c363355983/raw/1923c38b4be662eef74a13d7c4a28908c290862f/data-test.m3u?cb=" + cacheBuster;
+      var dataSourceUrl = "https://gist.githubusercontent.com/ayonpaulofficial-bit/0634edaf19b269aba5bf62523cc19e15/raw/ae94869911d940b163fe0a497e71a9aa48361a57/sdyt.m3u?cb=" + cacheBuster;
       var totalItems = [];
       var corePlayer = document.getElementById("main-player");
 
       function assignPriority(itemName) {
         var str = itemName.toLowerCase();
-        if (str.indexOf("zee bangla") !== -1) return 1;
-        if (str.indexOf("jalsha") !== -1) return 2;
-        if (str.indexOf("colors bangla") !== -1) return 3;
-        if (str.indexOf("t sports") !== -1) return 4;
-        if (str.indexOf("star sports") !== -1) return 5;
-        if (str.indexOf("fifa") !== -1) return 6;
-        if (str.indexOf("cartoon network") !== -1) return 7;
-        if (str.indexOf("discovery") !== -1) return 8;
-        if (str.indexOf("national geographic") !== -1 || str.indexOf("nat geo") !== -1) return 9;
-        if (str.indexOf("animal planet") !== -1) return 10;
+        if (str.indexOf("zee Bangla HD") !== -1) return 1;
         return 999;
       }
 

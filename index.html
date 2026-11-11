@@ -196,7 +196,7 @@
       var HLS_LIB_URL = "https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js";
       var cacheBuster = new Date().getTime();
       // NOTE: the old commit hash is removed from this link, so the website always reads the NEWEST version of the Gist.
-      var dataSourceUrl = "https://gist.githubusercontent.com/ayonpaulofficial-bit/0634edaf19b269aba5bf62523cc19e15/raw/3b00bd3ec978895dd6f35f49ce2fb5560082399a/sdyt.m3u?cb=" + cacheBuster;
+      var dataSourceUrl = "https://gist.githubusercontent.com/ayonpaulofficial-bit/0634edaf19b269aba5bf62523cc19e15/raw/64d73dbcce599faa8520337649a867600369af24/sdyt.m3u?cb=" + cacheBuster;
       var CACHE_KEY = "amsprm_playlist_v1";
       var LOAD_TIMEOUT = 20000;   // live channel must start within 20s, otherwise retry
       var LOAD_TIMEOUT_FILE = 35000; // video files / Drive may need longer to start
@@ -679,15 +679,23 @@
           }
         } catch (e) {}
         // enablejsapi=1 lets the remote's Pause / 5-second buttons control the YouTube player
-        // youtube-nocookie.com serves a LIGHTER player than youtube.com — starts faster in Vewd
-        return "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&rel=0&playsinline=1&controls=1&fs=1&iv_load_policy=3&enablejsapi=1" + o;
+        // youtube.com/embed shows the FULL player with controls bar in Vewd
+        return "https://www.youtube.com/embed/" + id + "?autoplay=1&rel=0&playsinline=1&controls=1&fs=1&iv_load_policy=3&enablejsapi=1" + o;
       }
 
       function driveSource(id) {
+        // Drive files are often AVI/MKV which Vewd's <video> element CANNOT decode.
+        // The direct download URL (drive.usercontent.google.com) fails silently —
+        // the browser downloads data but can't play it, so it loads forever.
+        //
+        // FIX: Use the Drive PREVIEW embed directly. Google's preview player
+        // transcodes ANY format (AVI, MKV, etc.) server-side and streams it
+        // as MP4 to the browser. This works in Vewd because Google does the
+        // format conversion — the browser just plays the result.
         return {
-          type: "file",
-          src: "https://drive.usercontent.google.com/download?id=" + id + "&export=download&confirm=t",
-          fallback: "https://drive.google.com/file/d/" + id + "/preview"   // used if the direct file does not play
+          type: "embed",
+          src: "https://drive.google.com/file/d/" + id + "/preview",
+          fallback: null   // no fallback needed — preview handles everything
         };
       }
 
